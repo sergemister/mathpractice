@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Math Practise</title>
+    <link href="mathPractise.css" rel="stylesheet" type="text/css" />
+    <script src="mathPractise.js">
+    </script>
+  </head>
+  <body class="noPadding" onload="init()">
+    <canvas id="problemCanvas" class="noPadding" onclick="showNextScreen()"></canvas>
+    <div id="buttons">
+      <button onclick="toggleSettingsDisplay()">Settings</button>
+      <div id="settings" class="hidden">
+	<table>
+	  <tr>
+	    <td>Min:</td>
+	    <td><input type="text" id="minValue" value="1" /></td>
+	  </tr>
+	  <tr>
+	    <td>Max:</td><td><input type="text" id="maxValue" value="10" /></td>
+	  </tr>
+	  <tr>
+	    <td>Operator:</td>
+	    <td>
+	      <select id="operator">
+		<option value="+">+</option>
+		<option value="-">-</option>
+		<option value="&#x00d7;">&#x00d7;</option>
+		<option value="&#x00f7;">&#x00f7;</option>
+	      </select>
+	    </td>
+	  </tr>
+      </div>
+    </div>
+  </body>
+</html>
