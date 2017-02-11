@@ -1,12 +1,14 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>Math Practice</title>
     <link href="mathPractice.css" rel="stylesheet" type="text/css" />
     <script src="mathPractice.js">
     </script>
   </head>
-  <body class="noPadding" onload="init()">
-    <canvas id="problemCanvas" class="noPadding" onclick="showNextScreen()"></canvas>
+  <body class="main" onload="init()">
+    <canvas id="problemCanvas" class="main" onclick="showNextScreen()"></canvas>
     <div id="buttons">
       <button onclick="toggleSettingsDisplay()">Settings</button>
       <div id="settings" class="hidden">
@@ -29,6 +31,7 @@
 	      </select>
 	    </td>
 	  </tr>
+	</table>
       </div>
     </div>
   </body>

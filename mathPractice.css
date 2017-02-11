@@ -1,8 +1,17 @@
-.noPadding {
+.main {
     padding: 0px;
     margin: 0px;
+    font-size: 24px;
 }
 
 .hidden {
     display: none;
+}
+
+input, button, select {
+    font-size: inherit;
+}
+
+canvas {
+    vertical-align: top;
 }
