@@ -20,8 +20,10 @@ var nextScreen=0;
 
 /* The configured minimum and maximum operand values, and the
  * operator */
-var fcOperandMin;
-var fcOperandMax;
+var fcOperandMin1;
+var fcOperandMax1;
+var fcOperandMin2;
+var fcOperandMax2;
 var fcOperator;
 
 /* The two operands and result for the current problem */
@@ -38,8 +40,10 @@ var expressionChars;
 var buttonsElement;
 var problemCanvasElement;
 var settingsElement;
-var minValueElement;
-var maxValueElement;
+var minValue1Element;
+var maxValue1Element;
+var minValue2Element;
+var maxValue2Element;
 var operatorElement;
 
 function init() {
@@ -47,8 +51,10 @@ function init() {
     buttonsElement=document.getElementById("buttons");
     problemCanvasElement=document.getElementById("problemCanvas");
     settingsElement=document.getElementById("settings");
-    minValueElement=document.getElementById("minValue");
-    maxValueElement=document.getElementById("maxValue");
+    minValue1Element=document.getElementById("minValue1");
+    maxValue1Element=document.getElementById("maxValue1");
+    minValue2Element=document.getElementById("minValue2");
+    maxValue2Element=document.getElementById("maxValue2");
     operatorElement=document.getElementById("operator");
 
     // Compute the width of the widest character to be displayed.
@@ -73,33 +79,52 @@ function intLen(n) {
 }
 
 /* Returns a random integer within the allowed range */
-function nextOperand() {
-    return Math.floor(Math.random()*(fcOperandMax-fcOperandMin+1)+fcOperandMin);
+function nextOperand(min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+/* Validates the minElement and maxElement form values, making sure
+ * min>=0, max>=1, and min<=max.  If not, updates the values so that they
+ * comply */
+function validateAndUpdateBounds(minElement, maxElement) {
+    var minValue=parseInt(minElement.value,10);
+    if (minValue<0) {
+	minValue=0;
+    }
+    var maxValue=parseInt(maxElement.value,10);
+    if (maxValue<1) {
+	maxValue=1;
+    }
+    if (minValue>maxValue) {
+	var temp=maxValue;
+	maxValue=minValue;
+	minValue=temp;
+    }
+    minElement.value=minValue;
+    maxElement.value=maxValue;
 }
 
 /* Generates and displays the next math problem */
 function showNextScreen() {
     if (nextScreen==0) {
 	// Generate a new problem
-	fcOperandMin=parseInt(minValueElement.value,10);
-	if (fcOperandMin<0) {
-	    fcOperandMin=0;
-	}
-	fcOperandMax=parseInt(maxValueElement.value,10);
-	if (fcOperandMax<1) {
-	    fcOperandMax=1;
-	}
-	if (fcOperandMin>fcOperandMax) {
-	    var temp=fcOperandMax;
-	    fcOperandMax=fcOperandMin;
-	    fcOperandMin=temp;
-	}
-	minValueElement.value=fcOperandMin;
-	maxValueElement.value=fcOperandMax;
+	validateAndUpdateBounds(minValue1Element,maxValue1Element);
+	validateAndUpdateBounds(minValue2Element,maxValue2Element);
+	fcOperandMin1=parseInt(minValue1Element.value,10);
+	fcOperandMax1=parseInt(maxValue1Element.value,10);
+	fcOperandMin2=parseInt(minValue2Element.value,10);
+	fcOperandMax2=parseInt(maxValue2Element.value,10);
 
 	fcOperator=operatorElement.value;
-	fcOperand1=nextOperand();
-	fcOperand2=nextOperand();
+	fcOperand1=nextOperand(fcOperandMin1,fcOperandMax1);
+	fcOperand2=nextOperand(fcOperandMin2,fcOperandMax2);
+
+	if (Math.random()<0.5 && fcOperator!=divide) {
+	    var temp=fcOperand1;
+	    fcOperand1=fcOperand2;
+	    fcOperand2=temp;
+	}
+	
 	if (fcOperator==plus) {
 	    fcResult=fcOperand1+fcOperand2;
 	} else if (fcOperator==minus) {
@@ -113,7 +138,7 @@ function showNextScreen() {
 	    fcResult=fcOperand1*fcOperand2;
 	} else if (fcOperator==divide) {
 	    while (fcOperand2==0) {
-		fcOperand2=nextOperand();
+		fcOperand2=nextOperand(fcOperandMin2,fcOperandMax2);
 	    }
 	    fcResult=fcOperand1;
 	    fcOperand1=fcOperand1*fcOperand2;
@@ -127,15 +152,15 @@ function showNextScreen() {
 
     // expressionChars indicates the number of characters in the full
     // math expression.
-    expressionChars=1+1+2*intLen(fcOperandMax);
+    expressionChars=1+1+intLen(fcOperandMax1)+intLen(fcOperandMax2);
     if (fcOperator==plus) {
 	// could have a carry for addition
-	expressionChars+=intLen(fcOperandMax+fcOperandMax);
+	expressionChars+=intLen(fcOperandMax1+fcOperandMax2);
     } else if (fcOperator==minus) {
-	expressionChars+=intLen(fcOperandMax);
+	expressionChars+=intLen(Math.max(fcOperandMax1,fcOperandMax2));
     } else {
 	// multiplication or division
-	expressionChars+=intLen(fcOperandMax*fcOperandMax);
+	expressionChars+=intLen(fcOperandMax1*fcOperandMax2);
     }
 
     showCurrentScreen();
